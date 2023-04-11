@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean abstract="true" id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        <property name="workDirectory" value="#{systemProperties['LocalDir']}/ignite/work"/>
+
+        <property name="metricsLogFrequency" value="0"/>
+        <property name="clientMode" value="false"/>
+        <property name="peerClassLoadingEnabled" value="true"/>
+
+    </bean>
+</beans>

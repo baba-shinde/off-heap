@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="file:${ConfigDir}/ignite-config.xml" />
+
+    <bean abstract="true" id="abstractCacheConfig" class="org.apache.ignite.configuration.CacheConfiguration">
+        <property name="copyOnRead" value="false" />
+        <property name="storeKeepBinary" value="true" />
+        <property name="atomicityMode" value="ATOMIC"/>
+        <property name="statisticsEnabled" value="true" />
+        <property name="onheapCacheEnabled" value="true" />
+        <property name="sqlOnheapCacheEnabled" value="true" />
+    </bean>
+
+    <bean parent="ignite.cfg">
+        <property name="igniteInstanceName" value="#{systemProperties['ignite.node.name']}" />
+        <property name="cacheConfiguration">
+            <list>
+                <bean parent="abstractCacheConfig">
+                    <property name="name" value="orderCache"/>
+                    <property name="cacheMode" value="LOCAL" />
+                </bean>
+            </list>
+        </property>
+
+        <property name="discoverySpi" >
+            <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+                <property name="localPort" value="#{systemProperties['ignite.local.port']}"/>
+                <property name="ipFinder">
+                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
+                        <property name="addresses">
+                            <list>
+                                <value>#{systemProperties['ignite.node1.address']}</value>
+                                <value>#{systemProperties['ignite.node2.address']}</value>
+                                <value>#{systemProperties['ignite.node3.address']}</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+
+        </property>
+    </bean>
+</beans>
